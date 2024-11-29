@@ -342,7 +342,7 @@ def main():
     default_log_conf_location = '/etc/apel/parserlog.cfg'
     arg_parser = ArgumentParser(description=__doc__)
 
-    arg_parser.add_argument('c', '--config',
+    arg_parser.add_argument('-c', '--config',
                             help='Location of config file',
                             default=default_conf_location)
     arg_parser.add_argument('-l', '--log_config',
@@ -352,13 +352,13 @@ def main():
                             action='version',
                             version=ver)
 
-    # Using the vars function to output a dict-like view rather than Namespace object.
-    options = vars(arg_parser.parse_args())
+    # Parsing arguments into an argparse.Namespace object for structured access.
+    options = arg_parser.parse_args()
 
     # Read configuration from file
     try:
         cp = ConfigParser.ConfigParser()
-        cp.read(options['config'])
+        cp.read(options.config)
     except Exception as e:
         sys.stderr.write(str(e))
         sys.stderr.write('\n')
@@ -366,8 +366,8 @@ def main():
 
     # set up logging
     try:
-        if os.path.exists(options['log_config']):
-            logging.config.fileConfig(options['log_config'])
+        if os.path.exists(options.log_config):
+            logging.config.fileConfig(options.log_config)
         else:
             set_up_logging(cp.get('logging', 'logfile'),
                            cp.get('logging', 'level'),
